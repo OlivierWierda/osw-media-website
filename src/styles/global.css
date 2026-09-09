@@ -120,7 +120,8 @@ p {
 }
 
 .site-header {
-	background: var(--color-bg-raised);
+	background: var(--osw-white);
+	color: var(--osw-black);
 	border-bottom: 1px solid var(--color-border);
 }
 
@@ -146,11 +147,21 @@ p {
 	text-decoration: none;
 	font-size: 0.875rem;
 	letter-spacing: 0.02em;
-	color: var(--color-text-muted);
+	color: var(--osw-grey);
 }
 
 .site-header nav a:hover {
-	color: var(--color-text);
+	color: var(--osw-black);
+}
+
+.site-header .btn-outline {
+	border-color: var(--osw-black);
+	color: var(--osw-black);
+}
+
+.site-header .btn-outline:hover {
+	background: var(--osw-black);
+	color: var(--osw-white);
 }
 
 .btn {
