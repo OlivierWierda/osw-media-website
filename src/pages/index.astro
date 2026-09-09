@@ -29,27 +29,25 @@ const CONTACT_EMAIL = "hello@osw.media";
 	</section>
 
 	<section class="about">
-		<div class="wrap about-grid">
-			<div class="about-text">
-				<p class="subhead">About</p>
-				<div class="about-copy">
-					<p>
-						As an avid simracer, I look at the track with a mixed
-						perspective, as a driver, as an engineer, as a coach, and as a
-						passionate fan.
-					</p>
-					<p>But real motorsport is not just seen or heard, it is an energy you can feel.</p>
-					<p>
-						The vision to share this with others, morphed into OSW's Photo
-						Video, where I focus on bringing the atmosphere of the track, the
-						cars, and the paddock to life.
-					</p>
-					<p>Capturing and sharing the passion, that's the goal.</p>
-				</div>
+		<div class="wrap">
+			<p class="subhead">About</p>
+			<div class="about-copy">
+				<p>
+					As an avid simracer, I look at the track with a mixed
+					perspective, as a driver, as an engineer, as a coach, and as a
+					passionate fan.
+				</p>
+				<p>But real motorsport is not just seen or heard, it is an energy you can feel.</p>
+				<p>
+					The vision to share this with others, morphed into OSW's Photo
+					Video, where I focus on bringing the atmosphere of the track, the
+					cars, and the paddock to life.
+				</p>
+				<p>Capturing and sharing the passion, that's the goal.</p>
 			</div>
-			<div class="about-portrait">
-				<Image src={portraitCutout} alt="OSW behind the camera, trackside" width={640} quality={80} />
-			</div>
+		</div>
+		<div class="about-portrait">
+			<Image src={portraitCutout} alt="OSW behind the camera, trackside" width={900} quality={80} />
 		</div>
 	</section>
 </Layout>
@@ -120,14 +118,8 @@ const CONTACT_EMAIL = "hello@osw.media";
 	}
 
 	.about {
+		position: relative;
 		padding-block: var(--space-4);
-	}
-
-	.about-grid {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		align-items: end;
-		gap: var(--space-4);
 	}
 
 	.about .subhead {
@@ -145,22 +137,32 @@ const CONTACT_EMAIL = "hello@osw.media";
 		margin-bottom: 0;
 	}
 
+	/* Deliberately breaks the grid: positioned to straddle the
+	   hero/about seam rather than sit politely inside either section. */
 	.about-portrait {
-		justify-self: end;
-		align-self: end;
+		position: absolute;
+		top: -220px;
+		right: max(var(--space-3), calc((100% - var(--content-max)) / 2 + var(--space-3)));
+		width: min(30vw, 420px);
+		z-index: 2;
+		pointer-events: none;
 	}
 
 	.about-portrait :global(img) {
-		width: 220px;
+		width: 100%;
 		height: auto;
-		filter: grayscale(0.15);
+		display: block;
+		filter: grayscale(0.1) drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
 	}
 
-	@media (max-width: 720px) {
-		.about-grid {
-			grid-template-columns: 1fr;
+	@media (max-width: 900px) {
+		.about-portrait {
+			width: min(38vw, 300px);
+			top: -140px;
 		}
+	}
 
+	@media (max-width: 640px) {
 		.about-portrait {
 			display: none;
 		}
