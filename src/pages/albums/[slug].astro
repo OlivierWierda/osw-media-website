@@ -53,35 +53,73 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 
 			<div class="gallery">
 				{
-					album.data.items.map((item, index) => (
-						<div class="tile" data-item={item.type}>
-							{item.type === "photo" ? (
-								<div class="placeholder placeholder-photo">
-									<span class="placeholder-label">Photo {index + 1}</span>
-								</div>
-							) : (
-								<div class="placeholder placeholder-clip">
-									<span class="play-icon" aria-hidden="true" />
-									<span class="placeholder-label">Video Clip {index + 1}</span>
-								</div>
-							)}
-						</div>
-					))
+					album.data.items.map((item, index) => {
+						const label = item.type === "photo" ? `Photo ${index + 1}` : `Video Clip ${index + 1}`;
+						return (
+							<div class="tile" data-item={item.type}>
+								<button
+									type="button"
+									class="tile-trigger"
+									data-lightbox-trigger
+									data-type={item.type}
+									data-label={label}
+									aria-label={`View ${label}`}
+								>
+									{item.type === "photo" ? (
+										<div class="placeholder placeholder-photo">
+											<span class="placeholder-label">{label}</span>
+										</div>
+									) : (
+										<div class="placeholder placeholder-clip">
+											<span class="play-icon" aria-hidden="true" />
+											<span class="placeholder-label">{label}</span>
+										</div>
+									)}
+								</button>
+							</div>
+						);
+					})
 				}
+			</div>
+		</div>
+
+		<div class="lightbox" id="lightbox" hidden>
+			<div class="lightbox-backdrop" data-lightbox-close />
+			<div class="lightbox-panel" role="dialog" aria-modal="true" aria-label="Media preview">
+				<button type="button" class="lightbox-close" data-lightbox-close aria-label="Close">
+					&times;
+				</button>
+				<button type="button" class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Previous item">
+					&lsaquo;
+				</button>
+				<button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Next item">
+					&rsaquo;
+				</button>
+
+				<div class="lightbox-content">
+					<div class="placeholder lightbox-media" id="lightbox-media" />
+					<p class="lightbox-label" id="lightbox-label" />
+				</div>
+
+				<div class="lightbox-footer">
+					<a class="btn btn-primary" href={`mailto:${CONTACT_EMAIL}?subject=${orderSubject}`}>
+						Order full quality photos/clips
+					</a>
+				</div>
 			</div>
 		</div>
 	</section>
 </Layout>
 
 <script>
-	const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter-btn]");
+	const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-filter-btn]");
 	const tiles = document.querySelectorAll<HTMLElement>("[data-item]");
 
-	for (const button of buttons) {
+	for (const button of filterButtons) {
 		button.addEventListener("click", () => {
 			const filter = button.dataset.filterBtn;
 
-			for (const b of buttons) {
+			for (const b of filterButtons) {
 				b.setAttribute("aria-pressed", String(b === button));
 			}
 
@@ -90,6 +128,72 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 			}
 		});
 	}
+
+	// Lightbox: opens on any tile click, keeps the order button on-screen
+	// alongside whatever media is being viewed, and steps through the
+	// currently-filtered set of tiles (not the whole album).
+	const lightbox = document.getElementById("lightbox") as HTMLDivElement;
+	const lightboxMedia = document.getElementById("lightbox-media") as HTMLDivElement;
+	const lightboxLabel = document.getElementById("lightbox-label") as HTMLParagraphElement;
+	let lastFocused: HTMLElement | null = null;
+	let currentIndex = 0;
+
+	function visibleTriggers() {
+		return Array.from(
+			document.querySelectorAll<HTMLButtonElement>(
+				"[data-item]:not([hidden]) [data-lightbox-trigger]",
+			),
+		);
+	}
+
+	function renderAt(index: number) {
+		const triggers = visibleTriggers();
+		if (triggers.length === 0) return;
+		currentIndex = (index + triggers.length) % triggers.length;
+		const trigger = triggers[currentIndex];
+		const type = trigger.dataset.type;
+		const label = trigger.dataset.label ?? "";
+
+		lightboxMedia.className = `placeholder lightbox-media placeholder-${type}`;
+		lightboxMedia.innerHTML =
+			type === "clip" ? '<span class="play-icon" aria-hidden="true"></span>' : "";
+		lightboxLabel.textContent = label;
+	}
+
+	function openLightbox(index: number) {
+		lastFocused = document.activeElement as HTMLElement;
+		renderAt(index);
+		lightbox.hidden = false;
+		document.body.style.overflow = "hidden";
+		(lightbox.querySelector(".lightbox-close") as HTMLButtonElement)?.focus();
+	}
+
+	function closeLightbox() {
+		lightbox.hidden = true;
+		document.body.style.overflow = "";
+		lastFocused?.focus();
+	}
+
+	for (const trigger of document.querySelectorAll<HTMLButtonElement>("[data-lightbox-trigger]")) {
+		trigger.addEventListener("click", () => {
+			const triggers = visibleTriggers();
+			openLightbox(triggers.indexOf(trigger));
+		});
+	}
+
+	for (const el of document.querySelectorAll("[data-lightbox-close]")) {
+		el.addEventListener("click", closeLightbox);
+	}
+
+	document.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => renderAt(currentIndex - 1));
+	document.querySelector("[data-lightbox-next]")?.addEventListener("click", () => renderAt(currentIndex + 1));
+
+	document.addEventListener("keydown", (event) => {
+		if (lightbox.hidden) return;
+		if (event.key === "Escape") closeLightbox();
+		if (event.key === "ArrowLeft") renderAt(currentIndex - 1);
+		if (event.key === "ArrowRight") renderAt(currentIndex + 1);
+	});
 </script>
 
 <style>
@@ -177,6 +281,21 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		aspect-ratio: 4 / 3;
 	}
 
+	.tile-trigger {
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+	}
+
+	.tile-trigger:hover .placeholder,
+	.tile-trigger:focus-visible .placeholder {
+		border-color: var(--color-accent);
+	}
+
 	.placeholder {
 		width: 100%;
 		height: 100%;
@@ -200,11 +319,135 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		color: var(--color-text-muted);
 	}
 
-	.play-icon {
+	/* :global — the lightbox injects a play-icon span via innerHTML, which
+	   doesn't carry Astro's scoping attribute, so this must match globally. */
+	:global(.play-icon) {
 		width: 0;
 		height: 0;
 		border-style: solid;
 		border-width: 0.55rem 0 0.55rem 0.9rem;
 		border-color: transparent transparent transparent var(--color-text-muted);
+	}
+
+	/* Lightbox */
+
+	.lightbox {
+		position: fixed;
+		inset: 0;
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--space-3);
+	}
+
+	/* Higher specificity than .lightbox so the hidden attribute actually
+	   hides it — author display:flex above would otherwise beat the
+	   browser's default [hidden]{display:none} UA rule. */
+	.lightbox[hidden] {
+		display: none;
+	}
+
+	.lightbox-backdrop {
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.8);
+	}
+
+	.lightbox-panel {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		width: min(100%, 40rem);
+		max-height: 90vh;
+		padding: var(--space-3);
+		background: var(--color-bg-raised);
+		border: 1px solid var(--color-border);
+		border-radius: 4px;
+	}
+
+	.lightbox-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.lightbox-media {
+		aspect-ratio: 4 / 3;
+	}
+
+	.lightbox-label {
+		text-align: center;
+		color: var(--color-text-muted);
+		margin-bottom: 0;
+	}
+
+	.lightbox-footer {
+		display: flex;
+		justify-content: center;
+	}
+
+	.lightbox-close {
+		position: absolute;
+		top: -0.75rem;
+		right: -0.75rem;
+		width: 2.25rem;
+		height: 2.25rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5rem;
+		line-height: 1;
+		color: var(--color-text);
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		cursor: pointer;
+	}
+
+	.lightbox-close:hover {
+		border-color: var(--color-accent);
+	}
+
+	.lightbox-nav {
+		position: absolute;
+		top: 50%;
+		translate: 0 -50%;
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.75rem;
+		line-height: 1;
+		color: var(--color-text);
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		cursor: pointer;
+	}
+
+	.lightbox-nav:hover {
+		border-color: var(--color-accent);
+	}
+
+	.lightbox-prev {
+		left: -1.25rem;
+	}
+
+	.lightbox-next {
+		right: -1.25rem;
+	}
+
+	@media (max-width: 640px) {
+		.lightbox-prev {
+			left: 0;
+		}
+
+		.lightbox-next {
+			right: 0;
+		}
 	}
 </style>
