@@ -47,7 +47,7 @@ const CONTACT_EMAIL = "hello@osw.media";
 			</div>
 		</div>
 		<div class="about-portrait">
-			<Image src={portraitCutout} alt="OSW behind the camera, trackside" width={900} quality={80} />
+			<Image src={portraitCutout} alt="OSW behind the camera, trackside" width={1358} quality={80} />
 		</div>
 	</section>
 </Layout>
@@ -129,7 +129,9 @@ const CONTACT_EMAIL = "hello@osw.media";
 	}
 
 	.about-copy {
-		max-width: 60ch;
+		/* Narrowed from 60ch so the column clears the (now much bigger)
+		   portrait's footprint instead of running text under it. */
+		max-width: 34ch;
 		color: var(--color-text-muted);
 	}
 
@@ -141,9 +143,9 @@ const CONTACT_EMAIL = "hello@osw.media";
 	   hero/about seam rather than sit politely inside either section. */
 	.about-portrait {
 		position: absolute;
-		top: -220px;
+		top: -440px;
 		right: max(var(--space-3), calc((100% - var(--content-max)) / 2 + var(--space-3)));
-		width: min(30vw, 420px);
+		width: min(60vw, 840px);
 		z-index: 2;
 		pointer-events: none;
 	}
@@ -157,8 +159,8 @@ const CONTACT_EMAIL = "hello@osw.media";
 
 	@media (max-width: 900px) {
 		.about-portrait {
-			width: min(38vw, 300px);
-			top: -140px;
+			width: min(76vw, 600px);
+			top: -280px;
 		}
 	}
 
