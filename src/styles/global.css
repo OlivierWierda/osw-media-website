@@ -88,9 +88,8 @@ h1,
 h2,
 h3 {
 	font-family: var(--font-display);
-	/* Brand spec is -4% tracking, but that reads too tight in practice —
-	   opened up slightly for legibility. */
-	letter-spacing: -0.015em;
+	/* Brand spec is -4% tracking; opened up slightly for legibility. */
+	letter-spacing: -0.01em;
 	line-height: 1.05;
 	text-transform: uppercase;
 	margin: 0 0 var(--space-2);
@@ -121,6 +120,7 @@ p {
 }
 
 .site-header {
+	background: var(--color-bg-raised);
 	border-bottom: 1px solid var(--color-border);
 }
 
@@ -140,14 +140,6 @@ p {
 .site-header .brand img {
 	height: 34px;
 	width: auto;
-	/* The logo's dark outline is ~the same black as the page background,
-	   so it disappears without this — fakes a thin outline by stacking
-	   offset drop-shadows around the opaque pixels. */
-	filter:
-		drop-shadow(1px 0 0 var(--color-border))
-		drop-shadow(-1px 0 0 var(--color-border))
-		drop-shadow(0 1px 0 var(--color-border))
-		drop-shadow(0 -1px 0 var(--color-border));
 }
 
 .site-header nav a {
