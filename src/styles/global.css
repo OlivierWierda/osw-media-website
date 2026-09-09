@@ -148,6 +148,7 @@ p {
 
 .site-header nav a {
 	text-decoration: none;
+	font-weight: 400;
 	font-size: 0.875rem;
 	letter-spacing: 0.02em;
 	color: var(--osw-grey);
@@ -155,16 +156,6 @@ p {
 
 .site-header nav a:hover {
 	color: var(--osw-black);
-}
-
-.site-header .btn-outline {
-	border-color: var(--osw-black);
-	color: var(--osw-black);
-}
-
-.site-header .btn-outline:hover {
-	background: var(--osw-black);
-	color: var(--osw-white);
 }
 
 .btn {
