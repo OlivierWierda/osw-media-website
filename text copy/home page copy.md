@@ -12,13 +12,11 @@ Contact
 View albums
 About
 
-Using my own channels as a launching pad, I work as an esports-level sim racing coach; and through personalized lap reviews and one-on-one training, I have helped dozens of sim racers become faster and more consistent.
+As an avid simracer, I look at the track with a mixed perspective, as a driver, as an engineer, as a coach, and as a passionate fan.
 
-I also offer a free digital course "Fundamentals of Speed: (Sim) Racing for Beginners". Where I guide people through everything from the basics to the finer points of the sport. 
+But real motorsport is not just seen or heard, it is an energy you can feel. 
 
-What started as a passion project has since grown into a thriving community of talented racing aficionados, with some competing, with success, in E-Sports events.
-
-The digital racing world is getting close to reality, yet we are still a long way off; the more time I spend in the sim, the more my passion screams for the smell of petrol and burning rubber.
+The vision to share this with others, morphed into OSW's Photo Video, where I focus on bringing the athmosphere of the track, the cars, and the paddock to life.
 
 Capturing and sharing the passion, that's the goal.
 
