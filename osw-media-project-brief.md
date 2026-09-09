@@ -40,7 +40,7 @@ osw.media is the future home for three separate but related brands run by one pe
 ```
 /                      → Photo/Video landing page
 /albums                → Grid of albums
-/albums/[slug]         → Individual album: mixed photos + video clips, filterable, "order unwatermarked/4K" mailto link
+/albums/[slug]         → Individual album: mixed photos + video clips, filterable, "order full quality photos/clips" mailto link
 ```
 
 An album is per event, or — for a multi-day event — per day (e.g. "Spa 24H — Day 1", "Spa 24H — Day 2" as separate album entries; no event-grouping layer above albums).
@@ -58,7 +58,7 @@ An album is per event, or — for a multi-day event — per day (e.g. "Spa 24H �
 ### `/albums/[slug]`
 - Single gallery combining pre-watermarked images and watermarked video clips (Cloudflare Stream embeds) for that album
 - Two prominent filter buttons: **Photos** / **Video Clips** (plus an implicit "All"), filtering the same gallery client-side
-- One "Order unwatermarked / 4K" button per album → `mailto:` link, subject line pre-filled with the album name (e.g. `mailto:hello@osw.media?subject=Order%20inquiry:%20[Album%20Name]`) — buyer specifies which items they want in the email body
+- One "Order full quality photos/clips" button per album → `mailto:` link, subject line pre-filled with the album name (e.g. `mailto:hello@osw.media?subject=Order%20inquiry:%20[Album%20Name]`) — buyer specifies which items they want in the email body
 
 ## Content/assets
 
