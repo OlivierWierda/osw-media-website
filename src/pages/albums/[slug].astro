@@ -89,15 +89,17 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 				<button type="button" class="lightbox-close" data-lightbox-close aria-label="Close">
 					&times;
 				</button>
-				<button type="button" class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Previous item">
-					&lsaquo;
-				</button>
-				<button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Next item">
-					&rsaquo;
-				</button>
 
 				<div class="lightbox-content">
-					<div class="placeholder lightbox-media" id="lightbox-media" />
+					<div class="lightbox-media-wrap">
+						<div class="placeholder lightbox-media" id="lightbox-media" />
+						<button type="button" class="lightbox-nav lightbox-prev" data-lightbox-prev aria-label="Previous item">
+							<span class="chevron chevron-left" aria-hidden="true" />
+						</button>
+						<button type="button" class="lightbox-nav lightbox-next" data-lightbox-next aria-label="Next item">
+							<span class="chevron chevron-right" aria-hidden="true" />
+						</button>
+					</div>
 					<p class="lightbox-label" id="lightbox-label" />
 				</div>
 
@@ -329,6 +331,12 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		border-color: transparent transparent transparent var(--color-text-muted);
 	}
 
+	/* 3x the gallery-tile play icon — the lightbox media box is much
+	   bigger, so the same icon size read as too small there. */
+	:global(.lightbox-media .play-icon) {
+		border-width: 1.65rem 0 1.65rem 2.7rem;
+	}
+
 	/* Lightbox */
 
 	.lightbox {
@@ -360,7 +368,7 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-3);
-		width: min(100%, 40rem);
+		width: min(100%, 53rem);
 		max-height: 90vh;
 		padding: var(--space-3);
 		background: var(--color-bg-raised);
@@ -372,6 +380,10 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
+	}
+
+	.lightbox-media-wrap {
+		position: relative;
 	}
 
 	.lightbox-media {
@@ -420,8 +432,6 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 1.75rem;
-		line-height: 1;
 		color: var(--color-text);
 		background: var(--color-bg);
 		border: 1px solid var(--color-border);
@@ -439,6 +449,24 @@ const clipCount = album.data.items.filter((item) => item.type === "clip").length
 
 	.lightbox-next {
 		right: -1.25rem;
+	}
+
+	/* Hand-drawn chevrons instead of the lsaquo/rsaquo glyphs — those
+	   render with an off-center visual weight in most fonts. */
+	.chevron {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-style: solid;
+		border-width: 0 0.15rem 0.15rem 0;
+		border-color: var(--color-text);
+	}
+
+	.chevron-right {
+		transform: translateX(-15%) rotate(-45deg);
+	}
+
+	.chevron-left {
+		transform: translateX(15%) rotate(135deg);
 	}
 
 	@media (max-width: 640px) {
