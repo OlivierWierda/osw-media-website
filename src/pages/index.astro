@@ -2,7 +2,6 @@
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import heroCover from "../assets/brand/hero-cover.png";
-import portraitCutout from "../assets/brand/portrait-cutout.png";
 
 const CONTACT_EMAIL = "hello@osw.media";
 ---
@@ -45,9 +44,6 @@ const CONTACT_EMAIL = "hello@osw.media";
 				</p>
 				<p>Capturing and sharing the passion, that's the goal.</p>
 			</div>
-		</div>
-		<div class="about-portrait">
-			<Image src={portraitCutout} alt="OSW behind the camera, trackside" width={1358} quality={80} />
 		</div>
 	</section>
 </Layout>
@@ -118,7 +114,6 @@ const CONTACT_EMAIL = "hello@osw.media";
 	}
 
 	.about {
-		position: relative;
 		padding-block: var(--space-4);
 	}
 
@@ -129,44 +124,11 @@ const CONTACT_EMAIL = "hello@osw.media";
 	}
 
 	.about-copy {
-		/* Narrowed from 60ch so the column clears the (now much bigger)
-		   portrait's footprint instead of running text under it. */
-		max-width: 34ch;
+		max-width: 60ch;
 		color: var(--color-text-muted);
 	}
 
 	.about-copy p:last-child {
 		margin-bottom: 0;
-	}
-
-	/* Deliberately breaks the grid: positioned to straddle the
-	   hero/about seam rather than sit politely inside either section. */
-	.about-portrait {
-		position: absolute;
-		top: -440px;
-		right: max(var(--space-3), calc((100% - var(--content-max)) / 2 + var(--space-3)));
-		width: min(60vw, 840px);
-		z-index: 2;
-		pointer-events: none;
-	}
-
-	.about-portrait :global(img) {
-		width: 100%;
-		height: auto;
-		display: block;
-		filter: grayscale(0.1) drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
-	}
-
-	@media (max-width: 900px) {
-		.about-portrait {
-			width: min(76vw, 600px);
-			top: -280px;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.about-portrait {
-			display: none;
-		}
 	}
 </style>
