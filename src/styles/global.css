@@ -63,6 +63,10 @@
 
 html {
 	color-scheme: dark;
+	/* Base scale read too small at 100% browser zoom (fine at 125%) —
+	   bump root size so 1rem matches what 125% zoom was producing,
+	   instead of scaling individual elements. */
+	font-size: 125%;
 }
 
 body {
