@@ -3,13 +3,32 @@ import Layout from "../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
 	// Placeholder path so the route builds during scaffolding.
-	// Real paths will come from the albums content collection (step 4).
+	// Real paths + media will come from the albums content collection (step 4).
 	return [{ params: { slug: "example" } }];
 }
 
 const { slug } = Astro.params;
+const CONTACT_EMAIL = "hello@osw.media";
+const albumName = slug; // placeholder; real album title comes from content collection
+const orderSubject = encodeURIComponent(`Order inquiry: ${albumName}`);
 ---
 
 <Layout title={`Album: ${slug}`}>
 	<h1>Album: {slug}</h1>
+	<p>
+		One album per event, or per day for multi-day events. Contains both
+		photos and video clips together.
+	</p>
+
+	<div>
+		<button type="button" data-filter="all" aria-pressed="true">All</button>
+		<button type="button" data-filter="photo" aria-pressed="false">Photos</button>
+		<button type="button" data-filter="clip" aria-pressed="false">Video Clips</button>
+	</div>
+
+	<p><em>Gallery grid (photos + video clips, filterable) goes here — step 4.</em></p>
+
+	<a href={`mailto:${CONTACT_EMAIL}?subject=${orderSubject}`}>
+		Order unwatermarked / 4K
+	</a>
 </Layout>

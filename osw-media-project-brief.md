@@ -30,7 +30,7 @@ osw.media is the future home for three separate but related brands run by one pe
 | Hosting | **Cloudflare Pages** | Free tier, auto-deploy on git push, same account as Stream + DNS |
 | Video hosting | **Cloudflare Stream** | For watermarked video clips. ~$5–15/mo at this scale. No YouTube branding. |
 | Images | **Static assets in-repo** | Astro's built-in image optimization (resizing, lazy-load, modern formats). Revisit with Cloudflare Images if the library grows very large. |
-| Contact / ordering | **`mailto:` links** | No form backend. Order links pre-fill the email subject with the album/clip name for easy reference. |
+| Contact / ordering | **`mailto:` links** | No form backend. Order links pre-fill the email subject with the album name for easy reference. |
 | Booking (Academy, later) | Calendly | Not needed in Phase 1 |
 | Domain/DNS | Cloudflare DNS | Same account as Pages/Stream |
 | Version control | Git + GitHub | Triggers Cloudflare Pages auto-deploy |
@@ -40,47 +40,43 @@ osw.media is the future home for three separate but related brands run by one pe
 ```
 /                      → Photo/Video landing page
 /albums                → Grid of albums
-/albums/[slug]         → Individual album: watermarked images + "order unwatermarked/4K" mailto link
-/clips                 → Grid of clips
-/clips/[slug]          → Individual clip: Cloudflare Stream embed + "order unwatermarked/4K" mailto link
+/albums/[slug]         → Individual album: mixed photos + video clips, filterable, "order unwatermarked/4K" mailto link
 ```
+
+An album is per event, or — for a multi-day event — per day (e.g. "Spa 24H — Day 1", "Spa 24H — Day 2" as separate album entries; no event-grouping layer above albums).
 
 ### `/` — Landing page
 - Hero / intro
 - Short "about me" blurb (accreditation, background, what kind of work is done)
 - "Get in touch" button → simple `mailto:` link
 - Link/button to Albums
-- Link/button to Clips
 
-### `/albums` and `/clips`
-- Grid layout, one entry per album/clip
-- Each entry links to its own detail page (`/albums/[slug]`, `/clips/[slug]`)
+### `/albums`
+- Grid layout, one entry per album (event or event-day)
+- Each entry links to its own detail page (`/albums/[slug]`)
 
 ### `/albums/[slug]`
-- Gallery of pre-watermarked images for that album
-- "Order unwatermarked / 4K" button → `mailto:` link, subject line pre-filled with the album name (e.g. `mailto:you@example.com?subject=Order%20inquiry:%20[Album%20Name]`)
-
-### `/clips/[slug]`
-- Cloudflare Stream embed of the watermarked clip
-- Same "order unwatermarked / 4K" mailto pattern, pre-filled with the clip name
+- Single gallery combining pre-watermarked images and watermarked video clips (Cloudflare Stream embeds) for that album
+- Two prominent filter buttons: **Photos** / **Video Clips** (plus an implicit "All"), filtering the same gallery client-side
+- One "Order unwatermarked / 4K" button per album → `mailto:` link, subject line pre-filled with the album name (e.g. `mailto:hello@osw.media?subject=Order%20inquiry:%20[Album%20Name]`) — buyer specifies which items they want in the email body
 
 ## Content/assets
 
 - All images and video clips supplied are **already watermarked** — no watermarking logic needed in the site.
-- Video files are uploaded to Cloudflare Stream separately (not part of the Astro repo); pages embed via Stream's player.
+- Video files are uploaded to Cloudflare Stream separately (not part of the Astro repo); album pages embed clips via Stream's player, interleaved with photos in the same gallery.
 - Images live as static files in the Astro project (`src/assets` or `public`, per Astro convention) — actual files to be supplied by the site owner per album.
+- Album data (name, slug, ordered list of photo + clip items) lives in structured content files (Astro content collection) — not hardcoded in page templates — so new albums/items can be added without touching code.
 
 ## Build sequence (agreed)
 
 Each step should produce the full current state of the site, not an isolated fragment, so it can be reviewed and run at every stage.
 
-1. **Project scaffold** — Astro project structure, empty routes for all 5 pages listed above, base layout (nav/footer), no styling yet. Should run (`astro dev`) with no errors.
-2. **Landing page content structure** — hero, about, get-in-touch, section links. Plain markup, no visual design yet.
+1. **Project scaffold** — Astro project structure, empty routes for all 3 pages listed above, base layout (nav/footer), no styling yet. Should run (`astro dev`) with no errors.
+2. **Landing page content structure** — hero, about, get-in-touch, section link. Plain markup, no visual design yet.
 3. **Visual design pass** — typography, color, layout for the trustworthy/professional aesthetic, applied to the landing page first.
-4. **Albums** — grid page + individual album template, styled to match, with placeholder images until real assets are supplied.
-5. **Clips** — grid page + individual clip template with Cloudflare Stream embed placeholder, styled to match.
-6. **Mailto/order-link wiring** — get-in-touch and order links across all pages, final content pass.
-7. **Deployment** — Cloudflare Pages setup, custom domain (`osw.media`) connection.
+4. **Albums** — grid page + individual album template (mixed photo/clip gallery with Photos/Video Clips filter, Cloudflare Stream embed placeholders), styled to match, with placeholder media until real assets are supplied.
+5. **Mailto/order-link wiring** — get-in-touch and order links across all pages, final content pass.
+6. **Deployment** — Cloudflare Pages setup, custom domain (`osw.media`) connection.
 
 ## Explicitly out of scope for this phase
 
