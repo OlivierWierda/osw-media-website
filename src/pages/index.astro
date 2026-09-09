@@ -5,28 +5,84 @@ const CONTACT_EMAIL = "hello@osw.media";
 ---
 
 <Layout title="Home">
-	<section id="hero">
-		<h1>OSW's Photo Video</h1>
-		<p>Racecar media production — track photography, spec work, accredited paddock access.</p>
+	<section class="hero">
+		<div class="wrap">
+			<p class="eyebrow">Accredited racecar media production</p>
+			<h1>Photo &amp; Video, Trackside.</h1>
+			<p class="lede">
+				Track photography, spec work, and accredited paddock coverage —
+				delivered as watermarked previews with unwatermarked/4K available on
+				request.
+			</p>
+			<div class="cta-row">
+				<a class="btn btn-primary" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
+				<a class="btn btn-outline" href="/albums">View albums</a>
+			</div>
+		</div>
 	</section>
 
-	<section id="about">
-		<h2>About</h2>
-		<!--
-			TODO: real bio/accreditation copy to be supplied by site owner.
-			Placeholder below marks where it goes — do not treat as final content.
-		-->
-		<p>
-			[About blurb placeholder — accreditation, background, and the kind of
-			work done. Real copy to be supplied.]
-		</p>
-	</section>
-
-	<section id="contact">
-		<a href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
-	</section>
-
-	<section id="explore">
-		<a href="/albums">View albums</a>
+	<section class="about">
+		<div class="wrap">
+			<p class="subhead">About</p>
+			<!--
+				TODO: real bio/accreditation copy to be supplied by site owner.
+				Placeholder below marks where it goes — do not treat as final content.
+			-->
+			<p class="about-copy">
+				[About blurb placeholder — accreditation, background, and the kind of
+				work done. Real copy to be supplied.]
+			</p>
+		</div>
 	</section>
 </Layout>
+
+<style>
+	.hero {
+		padding-block: var(--space-5) var(--space-4);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.eyebrow {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin-bottom: var(--space-2);
+	}
+
+	.hero h1 {
+		font-size: clamp(2.5rem, 6vw, 4.5rem);
+		max-width: 16ch;
+	}
+
+	.lede {
+		max-width: 48ch;
+		font-size: 1.0625rem;
+		color: var(--color-text-muted);
+		margin-top: var(--space-2);
+	}
+
+	.cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-top: var(--space-3);
+	}
+
+	.about {
+		padding-block: var(--space-4);
+	}
+
+	.about .subhead {
+		font-family: var(--font-subhead);
+		font-size: 1.5rem;
+		color: var(--color-text);
+	}
+
+	.about-copy {
+		max-width: 60ch;
+		color: var(--color-text-muted);
+	}
+</style>

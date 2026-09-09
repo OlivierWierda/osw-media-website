@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 interface Props {
 	title: string;
 }
@@ -10,18 +12,19 @@ const CONTACT_EMAIL = "hello@osw.media";
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" href="/brand/icon.png" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title} | OSW's Photo Video</title>
 	</head>
 	<body>
-		<header>
-			<nav>
-				<a href="/">OSW's Photo Video</a>
+		<header class="site-header">
+			<nav class="wrap">
+				<a class="brand" href="/">
+					<img src="/brand/horizontal-logo.png" alt="OSW's Photo Video" />
+				</a>
 				<a href="/albums">Albums</a>
-				<a href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
+				<a class="btn btn-outline" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
 			</nav>
 		</header>
 
@@ -29,8 +32,8 @@ const CONTACT_EMAIL = "hello@osw.media";
 			<slot />
 		</main>
 
-		<footer>
-			<p>&copy; {new Date().getFullYear()} OSW's Photo Video</p>
+		<footer class="site-footer">
+			<p class="wrap">&copy; {new Date().getFullYear()} OSW's Photo Video</p>
 		</footer>
 	</body>
 </html>
