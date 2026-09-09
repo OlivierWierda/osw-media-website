@@ -1,0 +1,37 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+const CONTACT_EMAIL = "hello@osw.media";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | OSW's Photo Video</title>
+	</head>
+	<body>
+		<header>
+			<nav>
+				<a href="/">OSW's Photo Video</a>
+				<a href="/albums">Albums</a>
+				<a href="/clips">Clips</a>
+				<a href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
+			</nav>
+		</header>
+
+		<main>
+			<slot />
+		</main>
+
+		<footer>
+			<p>&copy; {new Date().getFullYear()} OSW's Photo Video</p>
+		</footer>
+	</body>
+</html>

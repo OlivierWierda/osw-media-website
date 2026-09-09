@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	// Placeholder path so the route builds during scaffolding.
+	// Real paths will come from the clips content collection (step 5).
+	return [{ params: { slug: "example" } }];
+}
+
+const { slug } = Astro.params;
+---
+
+<Layout title={`Clip: ${slug}`}>
+	<h1>Clip: {slug}</h1>
+</Layout>

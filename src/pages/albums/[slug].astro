@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	// Placeholder path so the route builds during scaffolding.
+	// Real paths will come from the albums content collection (step 4).
+	return [{ params: { slug: "example" } }];
+}
+
+const { slug } = Astro.params;
+---
+
+<Layout title={`Album: ${slug}`}>
+	<h1>Album: {slug}</h1>
+</Layout>
