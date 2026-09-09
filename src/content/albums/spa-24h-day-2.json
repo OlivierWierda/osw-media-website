@@ -1,0 +1,12 @@
+{
+	"title": "Spa 24H — Day 2",
+	"date": "2026-07-26",
+	"venue": "Circuit de Spa-Francorchamps",
+	"summary": "Race day — start to chequered flag.",
+	"items": [
+		{ "type": "photo", "alt": "Placeholder photo 1" },
+		{ "type": "clip", "alt": "Placeholder clip 1" },
+		{ "type": "photo", "alt": "Placeholder photo 2" },
+		{ "type": "photo", "alt": "Placeholder photo 3" }
+	]
+}

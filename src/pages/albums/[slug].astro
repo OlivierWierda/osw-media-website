@@ -1,34 +1,210 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
-	// Placeholder path so the route builds during scaffolding.
-	// Real paths + media will come from the albums content collection (step 4).
-	return [{ params: { slug: "example" } }];
+	const albums = await getCollection("albums");
+	return albums.map((album) => ({
+		params: { slug: album.id },
+		props: { album },
+	}));
 }
 
-const { slug } = Astro.params;
+const { album } = Astro.props;
 const CONTACT_EMAIL = "hello@osw.media";
-const albumName = slug; // placeholder; real album title comes from content collection
-const orderSubject = encodeURIComponent(`Order inquiry: ${albumName}`);
+
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+	day: "numeric",
+	month: "short",
+	year: "numeric",
+});
+
+const orderSubject = encodeURIComponent(`Order inquiry: ${album.data.title}`);
+const photoCount = album.data.items.filter((item) => item.type === "photo").length;
+const clipCount = album.data.items.filter((item) => item.type === "clip").length;
 ---
 
-<Layout title={`Album: ${slug}`}>
-	<h1>Album: {slug}</h1>
-	<p>
-		One album per event, or per day for multi-day events. Contains both
-		photos and video clips together.
-	</p>
+<Layout title={album.data.title}>
+	<section class="album">
+		<div class="wrap">
+			<a class="back" href="/albums">&larr; All albums</a>
 
-	<div>
-		<button type="button" data-filter="all" aria-pressed="true">All</button>
-		<button type="button" data-filter="photo" aria-pressed="false">Photos</button>
-		<button type="button" data-filter="clip" aria-pressed="false">Video Clips</button>
-	</div>
+			<p class="date">{dateFormatter.format(album.data.date)}</p>
+			<h1>{album.data.title}</h1>
+			{album.data.venue && <p class="venue">{album.data.venue}</p>}
+			{album.data.summary && <p class="summary">{album.data.summary}</p>}
 
-	<p><em>Gallery grid (photos + video clips, filterable) goes here — step 4.</em></p>
+			<div class="toolbar">
+				<div class="filters" role="group" aria-label="Filter gallery">
+					<button type="button" class="pill" data-filter-btn="all" aria-pressed="true">
+						All ({album.data.items.length})
+					</button>
+					<button type="button" class="pill" data-filter-btn="photo" aria-pressed="false">
+						Photos ({photoCount})
+					</button>
+					<button type="button" class="pill" data-filter-btn="clip" aria-pressed="false">
+						Video Clips ({clipCount})
+					</button>
+				</div>
+				<a class="btn btn-primary" href={`mailto:${CONTACT_EMAIL}?subject=${orderSubject}`}>
+					Order unwatermarked / 4K
+				</a>
+			</div>
 
-	<a href={`mailto:${CONTACT_EMAIL}?subject=${orderSubject}`}>
-		Order unwatermarked / 4K
-	</a>
+			<div class="gallery">
+				{
+					album.data.items.map((item, index) => (
+						<div class="tile" data-item={item.type}>
+							{item.type === "photo" ? (
+								<div class="placeholder placeholder-photo">
+									<span class="placeholder-label">Photo {index + 1}</span>
+								</div>
+							) : (
+								<div class="placeholder placeholder-clip">
+									<span class="play-icon" aria-hidden="true" />
+									<span class="placeholder-label">Video Clip {index + 1}</span>
+								</div>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
 </Layout>
+
+<script>
+	const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter-btn]");
+	const tiles = document.querySelectorAll<HTMLElement>("[data-item]");
+
+	for (const button of buttons) {
+		button.addEventListener("click", () => {
+			const filter = button.dataset.filterBtn;
+
+			for (const b of buttons) {
+				b.setAttribute("aria-pressed", String(b === button));
+			}
+
+			for (const tile of tiles) {
+				tile.hidden = filter !== "all" && tile.dataset.item !== filter;
+			}
+		});
+	}
+</script>
+
+<style>
+	.album {
+		padding-block: var(--space-4) var(--space-5);
+	}
+
+	.back {
+		display: inline-block;
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+		text-decoration: none;
+		margin-bottom: var(--space-3);
+	}
+
+	.back:hover {
+		color: var(--color-text);
+	}
+
+	.date {
+		font-size: 0.8125rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin-bottom: 0.25rem;
+	}
+
+	.venue {
+		color: var(--color-text-muted);
+		margin-top: -0.5rem;
+	}
+
+	.summary {
+		max-width: 75ch;
+		color: var(--color-text-muted);
+	}
+
+	.toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-2);
+		margin-block: var(--space-3) var(--space-4);
+		padding-block: var(--space-2);
+		border-block: 1px solid var(--color-border);
+	}
+
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.pill {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+		background: transparent;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+		padding: 0.5rem 1.125rem;
+		cursor: pointer;
+	}
+
+	.pill:hover {
+		border-color: var(--color-text-muted);
+		color: var(--color-text);
+	}
+
+	.pill[aria-pressed="true"] {
+		background: var(--color-accent);
+		border-color: var(--color-accent);
+		color: var(--color-accent-contrast);
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+		gap: var(--space-2);
+	}
+
+	.tile {
+		aspect-ratio: 4 / 3;
+	}
+
+	.placeholder {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		background:
+			repeating-linear-gradient(
+				135deg,
+				var(--color-bg) 0 12px,
+				var(--color-bg-raised) 12px 24px
+			);
+		border: 1px solid var(--color-border);
+		border-radius: 4px;
+	}
+
+	.placeholder-label {
+		font-size: 0.8125rem;
+		color: var(--color-text-muted);
+	}
+
+	.play-icon {
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 0.55rem 0 0.55rem 0.9rem;
+		border-color: transparent transparent transparent var(--color-text-muted);
+	}
+</style>

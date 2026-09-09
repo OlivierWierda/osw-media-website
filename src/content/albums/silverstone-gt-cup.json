@@ -1,0 +1,13 @@
+{
+	"title": "Silverstone GT Cup",
+	"date": "2026-05-10",
+	"venue": "Silverstone Circuit",
+	"summary": "Single-day accredited paddock coverage.",
+	"items": [
+		{ "type": "photo", "alt": "Placeholder photo 1" },
+		{ "type": "photo", "alt": "Placeholder photo 2" },
+		{ "type": "photo", "alt": "Placeholder photo 3" },
+		{ "type": "clip", "alt": "Placeholder clip 1" },
+		{ "type": "photo", "alt": "Placeholder photo 4" }
+	]
+}
