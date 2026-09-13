@@ -1,0 +1,33 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import MediaGallery, { type MediaItem } from "../MediaGallery.astro";
+import portfolio from "../../content/portfolio.json";
+import { defaultLang } from "../../i18n/ui";
+import { useTranslations } from "../../i18n/utils";
+
+const items = portfolio.items as MediaItem[];
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+---
+
+<Layout title={t("portfolio.title")}>
+	<section class="portfolio">
+		<div class="wrap">
+			<h1>{t("portfolio.title")}</h1>
+			<p class="tagline">{portfolio.tagline}</p>
+
+			<MediaGallery items={items} orderLabel={t("portfolio.title")} />
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.portfolio {
+		padding-block: var(--space-4) var(--space-5);
+	}
+
+	.tagline {
+		max-width: 75ch;
+		color: var(--color-text-muted);
+	}
+</style>

@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { languages, defaultLang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
 
 interface Props {
 	title: string;
@@ -7,9 +10,20 @@ interface Props {
 
 const { title } = Astro.props;
 const CONTACT_EMAIL = "hello@osw.media";
+
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+
+// Same page, other language — strip a leading "/nl" if present so both
+// links can be built from the same locale-less pathname.
+const pathname = Astro.url.pathname.replace(/^\/nl(\/|$)/, "/");
+const langHrefs = {
+	en: pathname,
+	nl: getRelativeLocaleUrl("nl", pathname),
+};
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/png" href="/brand/icon.png" />
@@ -20,12 +34,25 @@ const CONTACT_EMAIL = "hello@osw.media";
 	<body>
 		<header class="site-header">
 			<nav class="wrap">
-				<a class="brand" href="/">
+				<a class="brand" href={langHrefs[lang]}>
 					<img src="/brand/horizontal-logo.png" alt="OSW's Photo Video" />
 				</a>
-				<a href="/portfolio">Portfolio</a>
-				<a href="/albums">Albums</a>
-				<a href={`mailto:${CONTACT_EMAIL}`}>Contact</a>
+				<a href={getRelativeLocaleUrl(lang, "/portfolio")}>{t("nav.portfolio")}</a>
+				<a href={getRelativeLocaleUrl(lang, "/albums")}>{t("nav.albums")}</a>
+				<a href={`mailto:${CONTACT_EMAIL}`}>{t("nav.contact")}</a>
+				<div class="lang-switch" role="group" aria-label="Language">
+					{
+						(Object.keys(languages) as (keyof typeof languages)[]).map((code) => (
+							<a
+								href={langHrefs[code]}
+								class="lang-btn"
+								aria-current={lang === code ? "true" : undefined}
+							>
+								{code.toUpperCase()}
+							</a>
+						))
+					}
+				</div>
 			</nav>
 		</header>
 
@@ -34,7 +61,37 @@ const CONTACT_EMAIL = "hello@osw.media";
 		</main>
 
 		<footer class="site-footer">
-			<p class="wrap">&copy; {new Date().getFullYear()} OSW's Photo Video</p>
+			<p class="wrap">&copy; {new Date().getFullYear()} {t("footer.text")}</p>
 		</footer>
 	</body>
 </html>
+
+<style>
+	.lang-switch {
+		display: flex;
+		gap: 0.375rem;
+	}
+
+	.lang-btn {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		color: var(--color-text-muted);
+		text-decoration: none;
+		padding: 0.25rem 0.5rem;
+		border: 1px solid var(--color-border);
+		border-radius: 999px;
+	}
+
+	.lang-btn:hover {
+		color: var(--color-text);
+		border-color: var(--color-text-muted);
+	}
+
+	.lang-btn[aria-current="true"] {
+		background: var(--color-accent);
+		border-color: var(--color-accent);
+		color: var(--color-accent-contrast);
+	}
+</style>

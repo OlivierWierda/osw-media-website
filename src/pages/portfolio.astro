@@ -1,29 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import MediaGallery, { type MediaItem } from "../components/MediaGallery.astro";
-import portfolio from "../content/portfolio.json";
-
-const items = portfolio.items as MediaItem[];
+import PortfolioView from "../components/pages/PortfolioView.astro";
 ---
 
-<Layout title="Portfolio">
-	<section class="portfolio">
-		<div class="wrap">
-			<h1>Portfolio</h1>
-			<p class="tagline">{portfolio.tagline}</p>
-
-			<MediaGallery items={items} orderLabel="Portfolio" />
-		</div>
-	</section>
-</Layout>
-
-<style>
-	.portfolio {
-		padding-block: var(--space-4) var(--space-5);
-	}
-
-	.tagline {
-		max-width: 75ch;
-		color: var(--color-text-muted);
-	}
-</style>
+<PortfolioView />

@@ -1,0 +1,128 @@
+---
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "../../layouts/Layout.astro";
+import heroCover from "../../assets/brand/hero-cover.jpg";
+import { defaultLang } from "../../i18n/ui";
+import { useTranslations } from "../../i18n/utils";
+
+const CONTACT_EMAIL = "hello@osw.media";
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+---
+
+<Layout title="Home">
+	<section class="hero">
+		<div class="hero-bg">
+			<Image src={heroCover} alt="" width={2400} quality={70} />
+			<div class="hero-bg-overlay"></div>
+		</div>
+		<div class="wrap hero-content">
+			<p class="eyebrow">{t("home.eyebrow")}</p>
+			<h1>{t("home.title")}</h1>
+			<p class="lede">{t("home.lede")}</p>
+			<div class="cta-row">
+				<a class="btn btn-primary" href={`mailto:${CONTACT_EMAIL}`}>{t("home.cta.contact")}</a>
+				<a class="btn btn-outline" href={getRelativeLocaleUrl(lang, "/albums")}>{t("home.cta.albums")}</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="about">
+		<div class="wrap">
+			<p class="subhead">{t("home.about.subhead")}</p>
+			<div class="about-copy">
+				<p>{t("home.about.p1")}</p>
+				<p>{t("home.about.p2")}</p>
+				<p>{t("home.about.p3")}</p>
+				<p>{t("home.about.p4")}</p>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.hero {
+		position: relative;
+		overflow: hidden;
+		padding-block: var(--space-5) var(--space-4);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.hero-bg {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.hero-bg :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.hero-bg-overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			rgba(32, 34, 38, 0.75) 0%,
+			rgba(32, 34, 38, 0.88) 55%,
+			rgba(32, 34, 38, 0.97) 100%
+		);
+	}
+
+	.hero-content {
+		position: relative;
+		z-index: 1;
+	}
+
+	.eyebrow {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin-bottom: var(--space-2);
+	}
+
+	.hero h1 {
+		font-size: clamp(2.5rem, 6vw, 4.5rem);
+		max-width: 16ch;
+	}
+
+	.lede {
+		max-width: 75ch;
+		font-size: 1.125rem;
+		color: var(--color-text-muted);
+		margin-top: var(--space-2);
+	}
+
+	.cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-top: var(--space-3);
+	}
+
+	.about {
+		padding-block: var(--space-4);
+	}
+
+	.about .subhead {
+		font-family: var(--font-subhead);
+		font-size: 1.5rem;
+		color: var(--color-text);
+	}
+
+	.about-copy {
+		max-width: 90ch;
+		font-size: 1.0625rem;
+		color: var(--color-text-muted);
+	}
+
+	.about-copy p:last-child {
+		margin-bottom: 0;
+	}
+</style>

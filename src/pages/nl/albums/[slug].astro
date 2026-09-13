@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import AlbumDetailView from "../../components/pages/AlbumDetailView.astro";
+import AlbumDetailView from "../../../components/pages/AlbumDetailView.astro";
 
 export async function getStaticPaths() {
 	const albums = await getCollection("albums");

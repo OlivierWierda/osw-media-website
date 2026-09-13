@@ -1,0 +1,73 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Layout from "../../layouts/Layout.astro";
+import MediaGallery from "../MediaGallery.astro";
+import { defaultLang } from "../../i18n/ui";
+import { useTranslations } from "../../i18n/utils";
+
+interface Props {
+	album: CollectionEntry<"albums">;
+}
+
+const { album } = Astro.props;
+const lang = Astro.currentLocale ?? defaultLang;
+const t = useTranslations(lang);
+
+const dateFormatter = new Intl.DateTimeFormat(lang === "nl" ? "nl-NL" : "en-GB", {
+	day: "numeric",
+	month: "short",
+	year: "numeric",
+});
+---
+
+<Layout title={album.data.title}>
+	<section class="album">
+		<div class="wrap">
+			<a class="back" href={getRelativeLocaleUrl(lang, "/albums")}>{t("albumDetail.back")}</a>
+
+			<p class="date">{dateFormatter.format(album.data.date)}</p>
+			<h1>{album.data.title}</h1>
+			{album.data.venue && <p class="venue">{album.data.venue}</p>}
+			{album.data.summary && <p class="summary">{album.data.summary}</p>}
+
+			<MediaGallery items={album.data.items} orderLabel={album.data.title} />
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.album {
+		padding-block: var(--space-4) var(--space-5);
+	}
+
+	.back {
+		display: inline-block;
+		font-size: 0.875rem;
+		color: var(--color-text-muted);
+		text-decoration: none;
+		margin-bottom: var(--space-3);
+	}
+
+	.back:hover {
+		color: var(--color-text);
+	}
+
+	.date {
+		font-size: 0.8125rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin-bottom: 0.25rem;
+	}
+
+	.venue {
+		color: var(--color-text-muted);
+		margin-top: -0.5rem;
+	}
+
+	.summary {
+		max-width: 75ch;
+		color: var(--color-text-muted);
+	}
+</style>
