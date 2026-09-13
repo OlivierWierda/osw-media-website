@@ -39,7 +39,7 @@ const langHrefs = {
 	<body>
 		<header class="site-header">
 			<nav class="wrap">
-				<a class="brand" href={langHrefs[lang]}>
+				<a class="brand" href={getRelativeLocaleUrl(lang, "/")}>
 					<img src="/brand/horizontal-logo.png" alt="OSW's Photo Video" />
 				</a>
 				<a href={getRelativeLocaleUrl(lang, "/portfolio")}>{t("nav.portfolio")}</a>
