@@ -2,6 +2,11 @@
 import "../styles/global.css";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { languages, defaultLang } from "../i18n/ui";
+
+const flags: Record<keyof typeof languages, string> = {
+	en: "\u{1F1EC}\u{1F1E7}",
+	nl: "\u{1F1F3}\u{1F1F1}",
+};
 import { useTranslations } from "../i18n/utils";
 
 interface Props {
@@ -47,8 +52,10 @@ const langHrefs = {
 								href={langHrefs[code]}
 								class="lang-btn"
 								aria-current={lang === code ? "true" : undefined}
+								aria-label={languages[code]}
+								title={languages[code]}
 							>
-								{code.toUpperCase()}
+								{flags[code]}
 							</a>
 						))
 					}
@@ -73,25 +80,29 @@ const langHrefs = {
 	}
 
 	.lang-btn {
-		font-family: var(--font-body);
-		font-weight: 600;
-		font-size: 0.75rem;
-		letter-spacing: 0.04em;
-		color: var(--color-text-muted);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		font-size: 1rem;
+		line-height: 1;
 		text-decoration: none;
-		padding: 0.25rem 0.5rem;
-		border: 1px solid var(--color-border);
+		border: 1px solid transparent;
 		border-radius: 999px;
+		opacity: 0.5;
+		filter: grayscale(60%);
+		transition: opacity 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
 	}
 
 	.lang-btn:hover {
-		color: var(--color-text);
-		border-color: var(--color-text-muted);
+		opacity: 0.85;
+		filter: grayscale(0%);
 	}
 
 	.lang-btn[aria-current="true"] {
-		background: var(--color-accent);
+		opacity: 1;
+		filter: grayscale(0%);
 		border-color: var(--color-accent);
-		color: var(--color-accent-contrast);
 	}
 </style>
