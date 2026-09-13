@@ -18,6 +18,17 @@ const CONTACT_EMAIL = "hello@osw.media";
 const orderSubject = encodeURIComponent(`Order inquiry: ${orderLabel}`);
 const photoCount = items.filter((item) => item.type === "photo").length;
 const clipCount = items.filter((item) => item.type === "clip").length;
+
+// The label shown in the lightbox and used for the aria-label — the
+// original filename (without extension) for a real photo, since that's
+// more useful than a generic "Photo 12" once there are hundreds of them.
+function filenameLabel(src: string) {
+	const last = src.split("/").pop() ?? src;
+	return decodeURIComponent(last).replace(/\.[^./]+$/, "");
+}
+// Only pull in the Cloudflare Stream player script when a clip actually
+// has a streamId — no point loading it for all-placeholder galleries.
+const hasStreamClip = items.some((item) => item.type === "clip" && item.streamId);
 ---
 
 <div class="toolbar">
@@ -40,7 +51,16 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 <div class="gallery">
 	{
 		items.map((item, index) => {
-			const label = item.type === "photo" ? `Photo ${index + 1}` : `Video Clip ${index + 1}`;
+			const label =
+				item.type === "photo"
+					? (item.src ? filenameLabel(item.src) : `Photo ${index + 1}`)
+					: `Video Clip ${index + 1}`;
+			const alt = item.alt ?? label;
+			// Thumbnail for a Stream clip — public endpoint, no account
+			// customer-code needed. https://developers.cloudflare.com/stream/viewing-videos/displaying-thumbnails/
+			const posterUrl = item.streamId
+				? `https://videodelivery.net/${item.streamId}/thumbnails/thumbnail.jpg`
+				: undefined;
 			return (
 				<div class="tile" data-item={item.type}>
 					<button
@@ -49,11 +69,21 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 						data-lightbox-trigger
 						data-type={item.type}
 						data-label={label}
+						data-alt={alt}
+						data-src={item.src ?? ""}
+						data-stream-id={item.streamId ?? ""}
 						aria-label={`View ${label}`}
 					>
-						{item.type === "photo" ? (
+						{item.type === "photo" && item.src ? (
+							<img class="tile-media" src={item.src} alt={alt} loading="lazy" decoding="async" />
+						) : item.type === "photo" ? (
 							<div class="placeholder placeholder-photo">
 								<span class="placeholder-label">{label}</span>
+							</div>
+						) : item.streamId ? (
+							<div class="tile-media-clip">
+								<img class="tile-media" src={posterUrl} alt={alt} loading="lazy" decoding="async" />
+								<span class="play-icon play-icon-overlay" aria-hidden="true" />
 							</div>
 						) : (
 							<div class="placeholder placeholder-clip">
@@ -95,6 +125,8 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 		</div>
 	</div>
 </div>
+
+{hasStreamClip && <script src="https://embed.cloudflarestream.com/embed/sdk.latest.js" defer />}
 
 <script>
 	const filterButtons = document.querySelectorAll<HTMLButtonElement>("[data-filter-btn]");
@@ -138,10 +170,28 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 		const trigger = triggers[currentIndex];
 		const type = trigger.dataset.type;
 		const label = trigger.dataset.label ?? "";
+		const alt = trigger.dataset.alt ?? label;
+		const src = trigger.dataset.src;
+		const streamId = trigger.dataset.streamId;
 
-		lightboxMedia.className = `placeholder lightbox-media placeholder-${type}`;
-		lightboxMedia.innerHTML =
-			type === "clip" ? '<span class="play-icon" aria-hidden="true"></span>' : "";
+		lightboxMedia.innerHTML = "";
+		if (type === "photo" && src) {
+			lightboxMedia.className = "lightbox-media";
+			const img = document.createElement("img");
+			img.className = "lightbox-img";
+			img.src = src;
+			img.alt = alt;
+			lightboxMedia.appendChild(img);
+		} else if (type === "clip" && streamId) {
+			lightboxMedia.className = "lightbox-media";
+			// <stream> is Cloudflare Stream's web component, registered by
+			// the embed SDK script loaded below when a clip has a streamId.
+			lightboxMedia.innerHTML = `<stream src="${streamId}" controls class="lightbox-stream"></stream>`;
+		} else {
+			lightboxMedia.className = `placeholder lightbox-media placeholder-${type}`;
+			lightboxMedia.innerHTML =
+				type === "clip" ? '<span class="play-icon" aria-hidden="true"></span>' : "";
+		}
 		lightboxLabel.textContent = label;
 	}
 
@@ -270,6 +320,29 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 		color: var(--color-text-muted);
 	}
 
+	.tile-media {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border: 1px solid var(--color-border);
+		border-radius: 4px;
+	}
+
+	.tile-media-clip {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.play-icon-overlay {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		translate: -50% -50%;
+		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+	}
+
 	/* :global — the lightbox injects a play-icon span via innerHTML, which
 	   doesn't carry Astro's scoping attribute, so this must match globally. */
 	:global(.play-icon) {
@@ -337,6 +410,24 @@ const clipCount = items.filter((item) => item.type === "clip").length;
 
 	.lightbox-media {
 		aspect-ratio: 4 / 3;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		background: var(--color-bg);
+		border-radius: 4px;
+	}
+
+	.lightbox-img {
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: contain;
+	}
+
+	:global(.lightbox-stream) {
+		width: 100%;
+		height: 100%;
+		border: 0;
 	}
 
 	.lightbox-label {

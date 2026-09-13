@@ -4,10 +4,19 @@
 	"venue": "Silverstone Circuit",
 	"summary": "Single-day accredited paddock coverage.",
 	"items": [
-		{ "type": "photo", "alt": "Placeholder photo 1" },
-		{ "type": "photo", "alt": "Placeholder photo 2" },
-		{ "type": "photo", "alt": "Placeholder photo 3" },
-		{ "type": "clip", "alt": "Placeholder clip 1" },
-		{ "type": "photo", "alt": "Placeholder photo 4" }
+		{
+			"type": "photo",
+			"src": "/media/albums/silverstone-gt-cup/selects-friday-217.jpg",
+			"alt": "Silverstone GT Cup — selects friday 217"
+		},
+		{
+			"type": "photo",
+			"src": "/media/albums/silverstone-gt-cup/selects-friday-282.jpg",
+			"alt": "Silverstone GT Cup — selects friday 282"
+		},
+		{
+			"type": "clip",
+			"alt": "Placeholder clip 1"
+		}
 	]
 }
