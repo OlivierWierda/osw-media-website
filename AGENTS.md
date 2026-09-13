@@ -41,6 +41,12 @@ empty), then connecting that repo to Cloudflare Pages and pointing
 - `brandkit/` (logos, color/type guidelines, fonts) is checked into the repo
   as source-of-truth; working copies actually used by the site live under
   `public/brand/`, `public/fonts/`, and `src/assets/brand/`.
+- i18n (EN default at `/`, NL at `/nl/`): all static UI copy lives in
+  `src/i18n/ui.ts` as a dotted-key dictionary. Works fine today, but
+  editing copy means finding the right key in a TypeScript object — a
+  plain-text copy file per language (or one file with clear EN/NL
+  sections) that `ui.ts` maps onto component keys would be easier to
+  maintain as this grows. Noted, not done.
 
 ## Development
 

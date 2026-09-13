@@ -1,9 +1,17 @@
-// All static site copy (nav, buttons, headings, boilerplate). Content
-// collection data — album titles, venues, summaries, the portfolio
-// tagline — is NOT translated here; it's typed in once, in English, by
-// whoever fills in info.txt/the JSON. Translating that per-item would mean
-// maintaining two copies of every album description, which isn't worth it
-// until there's a reason a Dutch-only description matters.
+// All static site copy (nav, buttons, headings, the portfolio tagline).
+// Content collection data — album titles, venues, summaries — is NOT
+// translated here; that's real event data typed in once, in English, via
+// info.txt/the JSON. Translating that per-item would mean maintaining two
+// copies of every album description, which isn't worth it until there's a
+// reason a Dutch-only description matters.
+//
+// NOTE for later: editing copy means finding the right dotted key in a
+// TypeScript object — fine for a handful of strings, increasingly janky
+// as the site grows. A cleaner setup would be a plain-text copy file per
+// language (or one file with clearly separated EN/NL sections) that a
+// non-developer can open and edit directly, with this file reduced to
+// just mapping those entries onto the keys components ask for. Worth
+// doing once this dictionary gets much bigger; not done now.
 export const defaultLang = "en" as const;
 
 export const languages = {
@@ -33,6 +41,7 @@ export const ui = {
 		"home.about.p4": "Capturing and sharing the passion, that's the goal.",
 
 		"portfolio.title": "Portfolio",
+		"portfolio.tagline": "A selection of the best work.",
 
 		"albums.title": "Albums",
 		"albums.intro": "One album per event, or per day for multi-day events.",
@@ -73,6 +82,7 @@ export const ui = {
 		"home.about.p4": "Die passie vastleggen en delen, dat is het doel.",
 
 		"portfolio.title": "Portfolio",
+		"portfolio.tagline": "Een selectie van het beste werk.",
 
 		"albums.title": "Albums",
 		"albums.intro": "Eén album per evenement, of per dag bij evenementen van meerdere dagen.",

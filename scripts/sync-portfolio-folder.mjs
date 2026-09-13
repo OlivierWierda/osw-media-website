@@ -4,12 +4,11 @@
 // calls this with the right paths already filled in.
 //
 // What it reads: public/media/portfolio/info.txt — plain "KEY: value" lines:
-//   TAGLINE: A selection of the best work.
 //   ALT-TEXT: OSW Media portfolio
 //
-// What it writes: src/content/portfolio.json — the single portfolio page,
-// not a per-event collection, so there's no title/date/venue like albums
-// have, just a tagline and the item list.
+// What it writes: src/content/portfolio.json — just the item list. The
+// tagline shown on the page comes from src/i18n/ui.ts instead (it's UI
+// copy, not per-photo data, and that way it's translatable EN/NL).
 //
 // Safe to run again any time — re-scans and rewrites the item list each
 // time, but keeps any hand-added alt/classes on a photo already listed
@@ -89,7 +88,6 @@ function main() {
 		if (item.type === "photo" && item.src) existingBySrc.set(item.src, item);
 	}
 
-	const tagline = info.tagline ?? existing.tagline ?? "A selection of the best work.";
 	const alt = info.alttext ?? existing.items?.find((i) => i.alt)?.alt ?? "Portfolio photo";
 
 	const photoItems = imageFiles.map((filename) => {
@@ -108,7 +106,7 @@ function main() {
 	const seenSrcs = new Set(imageFiles.map((filename) => `/media/portfolio/${encodeURIComponent(filename)}`));
 	const missing = [...existingBySrc.keys()].filter((src) => !seenSrcs.has(src));
 
-	const portfolio = { tagline, items: [...photoItems, ...clipItems] };
+	const portfolio = { items: [...photoItems, ...clipItems] };
 	writeFileSync(jsonPath, `${JSON.stringify(portfolio, null, "\t")}\n`);
 
 	console.log(`Done! Portfolio updated (${photoItems.length} photo(s), ${clipItems.length} clip(s) kept).`);
